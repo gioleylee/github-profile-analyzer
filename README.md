@@ -14,6 +14,7 @@ This project focuses on a simple idea: take raw public GitHub profile data and r
 - Top repositories ranked by public traction
 - Language distribution across public repositories
 - Recent public GitHub activity feed
+- Built-in light and dark mode toggle
 - Shareable profile links with `?user=<username>`
 
 ## What This Demonstrates

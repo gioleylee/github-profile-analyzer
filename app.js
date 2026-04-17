@@ -1,16 +1,37 @@
 const form = document.querySelector("#analyzer-form");
 const input = document.querySelector("#username");
 const submitButton = form.querySelector('button[type="submit"]');
+const themeToggle = document.querySelector("#theme-toggle");
 const results = document.querySelector("#results");
 const statusCard = document.querySelector("#status-card");
 const statusMessage = document.querySelector("#status-message");
 const metricTemplate = document.querySelector("#metric-template");
+const themeColorMeta = document.querySelector('meta[name="theme-color"]');
 
 const profileSummary = document.querySelector("#profile-summary");
 const scoreCard = document.querySelector("#score-card");
 const repoStats = document.querySelector("#repo-stats");
 const languageBreakdown = document.querySelector("#language-breakdown");
 const activityFeed = document.querySelector("#activity-feed");
+const storedTheme = window.localStorage.getItem("theme");
+const systemPrefersDark = window.matchMedia("(prefers-color-scheme: dark)");
+
+applyTheme(storedTheme || (systemPrefersDark.matches ? "dark" : "light"));
+
+themeToggle.addEventListener("click", () => {
+  const currentTheme = document.documentElement.dataset.theme || "light";
+  const nextTheme = currentTheme === "dark" ? "light" : "dark";
+  window.localStorage.setItem("theme", nextTheme);
+  applyTheme(nextTheme);
+});
+
+systemPrefersDark.addEventListener("change", (event) => {
+  if (window.localStorage.getItem("theme")) {
+    return;
+  }
+
+  applyTheme(event.matches ? "dark" : "light");
+});
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
@@ -376,4 +397,14 @@ function updateAddressBar(username) {
   const url = new URL(window.location.href);
   url.searchParams.set("user", username);
   window.history.replaceState({}, "", url);
+}
+
+function applyTheme(theme) {
+  document.documentElement.dataset.theme = theme;
+  themeToggle.textContent = theme === "dark" ? "Light mode" : "Dark mode";
+  themeToggle.setAttribute("aria-pressed", String(theme === "dark"));
+
+  if (themeColorMeta) {
+    themeColorMeta.setAttribute("content", theme === "dark" ? "#101923" : "#f7f3ea");
+  }
 }

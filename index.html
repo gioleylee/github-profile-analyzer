@@ -3,6 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#f7f3ea">
   <meta
     name="description"
     content="A lightweight browser app that analyzes public GitHub profiles, repositories, languages, and recent activity."
@@ -15,7 +16,18 @@
 <body>
   <div class="page-shell">
     <header class="hero">
-      <p class="eyebrow">GitHub Profile Analyzer</p>
+      <div class="hero-topline">
+        <p class="eyebrow">GitHub Profile Analyzer</p>
+        <button
+          id="theme-toggle"
+          class="theme-toggle"
+          type="button"
+          aria-label="Switch color theme"
+          aria-pressed="false"
+        >
+          Dark mode
+        </button>
+      </div>
       <h1>Turn a GitHub username into a quick technical snapshot.</h1>
       <p class="hero-copy">
         Review profile strength, repository health, language distribution, and recent public activity
