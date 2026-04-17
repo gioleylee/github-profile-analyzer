@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta
+    name="description"
+    content="A lightweight browser app that analyzes public GitHub profiles, repositories, languages, and recent activity."
+  >
+  <title>GitHub Profile Analyzer</title>
+  <link rel="preconnect" href="https://api.github.com">
+  <link rel="preconnect" href="https://avatars.githubusercontent.com">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <p class="eyebrow">GitHub Profile Analyzer</p>
+      <h1>Turn a GitHub username into a quick technical snapshot.</h1>
+      <p class="hero-copy">
+        Review profile strength, repository health, language distribution, and recent public activity
+        without leaving the browser.
+      </p>
+
+      <form id="analyzer-form" class="search-panel">
+        <label for="username" class="label">GitHub username</label>
+        <div class="search-row">
+          <input
+            id="username"
+            name="username"
+            type="text"
+            placeholder="octocat"
+            autocomplete="off"
+            spellcheck="false"
+            required
+          >
+          <button type="submit">Analyze</button>
+        </div>
+        <p class="hint">Try torvalds, gaearon, or any public GitHub account.</p>
+      </form>
+    </header>
+
+    <main id="results" class="results hidden" aria-live="polite">
+      <section class="card profile-card" id="profile-summary"></section>
+
+      <section class="grid">
+        <article class="card" id="score-card"></article>
+        <article class="card" id="repo-stats"></article>
+        <article class="card" id="language-breakdown"></article>
+        <article class="card" id="activity-feed"></article>
+      </section>
+    </main>
+
+    <section id="status-card" class="card status-card" aria-live="polite">
+      <div id="status-message">
+        Enter a public GitHub username to generate an analysis.
+      </div>
+    </section>
+  </div>
+
+  <template id="metric-template">
+    <div class="metric">
+      <span class="metric-label"></span>
+      <strong class="metric-value"></strong>
+    </div>
+  </template>
+
+  <script src="app.js"></script>
+</body>
+</html>
