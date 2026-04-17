@@ -137,6 +137,12 @@ input {
   margin-top: 28px;
 }
 
+.input-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+}
+
 .label,
 .card h2 {
   font-size: 0.95rem;
@@ -148,6 +154,10 @@ input {
   display: flex;
   gap: 12px;
   margin-top: 10px;
+}
+
+.search-actions {
+  margin-top: 14px;
 }
 
 input {
@@ -247,6 +257,47 @@ button:disabled {
   align-items: center;
 }
 
+.compare-header {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 18px;
+  align-items: stretch;
+}
+
+.compare-profile {
+  display: grid;
+  grid-template-columns: 112px 1fr;
+  gap: 20px;
+  align-items: center;
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  background: var(--panel-bg);
+}
+
+.compare-profile h2 {
+  margin: 0 0 6px;
+  font-size: 1.65rem;
+}
+
+.compare-profile p {
+  margin: 6px 0;
+  color: var(--muted);
+}
+
+.compare-vs {
+  align-self: center;
+  justify-self: center;
+  padding: 10px 14px;
+  border-radius: 999px;
+  background: var(--chip-bg);
+  border: 1px solid var(--line);
+  color: var(--primary);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+}
+
 .avatar {
   width: 112px;
   height: 112px;
@@ -343,6 +394,41 @@ button:disabled {
   background: var(--panel-bg);
 }
 
+.compare-table {
+  display: grid;
+  gap: 10px;
+  margin-top: 18px;
+}
+
+.compare-row {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  gap: 12px;
+  align-items: center;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: var(--panel-bg);
+}
+
+.compare-label {
+  color: var(--muted);
+  text-align: center;
+  font-size: 0.92rem;
+}
+
+.compare-value {
+  font-weight: 700;
+}
+
+.compare-value:last-child {
+  text-align: right;
+}
+
+.winner {
+  color: var(--primary);
+}
+
 .bar-list,
 .activity-list,
 .repo-list {
@@ -356,6 +442,20 @@ button:disabled {
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 14px;
   margin-top: 18px;
+}
+
+.compare-panels {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 14px;
+  margin-top: 18px;
+}
+
+.compare-panel {
+  padding: 14px 16px;
+  border-radius: 18px;
+  background: var(--panel-bg);
+  border: 1px solid var(--line);
 }
 
 .mini-chart {
@@ -395,6 +495,10 @@ button:disabled {
   font-size: 0.8rem;
 }
 
+.compact-spark {
+  height: 96px;
+}
+
 .bar-item,
 .activity-item,
 .repo-item {
@@ -419,6 +523,27 @@ button:disabled {
   border-radius: 999px;
   background: var(--track);
   overflow: hidden;
+}
+
+.compare-track {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.compare-fill {
+  height: 10px;
+  border-radius: 999px;
+}
+
+.compare-fill-primary {
+  justify-self: end;
+  background: linear-gradient(90deg, transparent, var(--primary));
+}
+
+.compare-fill-secondary {
+  background: linear-gradient(90deg, var(--gold), transparent);
 }
 
 .bar-fill {
@@ -479,6 +604,17 @@ a {
 
   .activity-visuals {
     grid-template-columns: 1fr;
+  }
+
+  .input-grid,
+  .compare-panels,
+  .compare-header,
+  .compare-profile {
+    grid-template-columns: 1fr;
+  }
+
+  .compare-vs {
+    width: fit-content;
   }
 
   .search-row,

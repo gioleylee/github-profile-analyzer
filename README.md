@@ -10,6 +10,7 @@ This project focuses on a simple idea: take raw public GitHub profile data and r
 
 - Profile overview with follower, following, location, and bio details
 - Computed profile score based on public activity and repository signals
+- Compare mode for two public GitHub profiles
 - Expandable score explanation with visible scoring criteria
 - Repository metrics including stars, forks, watchers, and recent updates
 - Top repositories ranked by public traction

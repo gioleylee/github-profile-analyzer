@@ -1,5 +1,6 @@
 const form = document.querySelector("#analyzer-form");
 const input = document.querySelector("#username");
+const compareInput = document.querySelector("#compare-username");
 const submitButton = form.querySelector('button[type="submit"]');
 const themeToggle = document.querySelector("#theme-toggle");
 const results = document.querySelector("#results");
@@ -37,42 +38,60 @@ form.addEventListener("submit", async (event) => {
   event.preventDefault();
 
   const username = input.value.trim();
+  const compareUsername = compareInput.value.trim();
   if (!username) {
     setStatus("Enter a GitHub username first.", "error");
     return;
   }
 
-  await analyzeProfile(username);
+  await analyzeProfiles(username, compareUsername);
 });
 
-const initialUsername = new URLSearchParams(window.location.search).get("user") || "octocat";
+const params = new URLSearchParams(window.location.search);
+const initialUsername = params.get("user") || "octocat";
+const initialCompareUsername = params.get("compare") || "";
 input.value = initialUsername;
-analyzeProfile(initialUsername);
+compareInput.value = initialCompareUsername;
+analyzeProfiles(initialUsername, initialCompareUsername);
 
-async function analyzeProfile(username) {
+async function analyzeProfiles(username, compareUsername = "") {
   try {
     setLoadingState(true);
-    setStatus(`Loading ${username}...`, "loading");
+    setStatus(compareUsername ? `Comparing ${username} and ${compareUsername}...` : `Loading ${username}...`, "loading");
     results.classList.add("hidden");
 
-    const [profile, repositories, events] = await Promise.all([
-      fetchJson(`https://api.github.com/users/${encodeURIComponent(username)}`),
-      fetchJson(`https://api.github.com/users/${encodeURIComponent(username)}/repos?per_page=100&sort=updated`),
-      fetchJson(`https://api.github.com/users/${encodeURIComponent(username)}/events/public?per_page=100`),
+    const [primaryAnalysis, secondaryAnalysis] = await Promise.all([
+      fetchProfileAnalysis(username),
+      compareUsername ? fetchProfileAnalysis(compareUsername) : Promise.resolve(null),
     ]);
 
-    const analysis = buildAnalysis(profile, repositories, events);
-    renderAnalysis(analysis);
-    updateAddressBar(analysis.profile.login);
+    if (secondaryAnalysis) {
+      renderComparison(primaryAnalysis, secondaryAnalysis);
+      updateAddressBar(primaryAnalysis.profile.login, secondaryAnalysis.profile.login);
+      setStatus(`Comparison ready for ${primaryAnalysis.profile.login} and ${secondaryAnalysis.profile.login}.`, "success");
+    } else {
+      renderAnalysis(primaryAnalysis);
+      updateAddressBar(primaryAnalysis.profile.login);
+      setStatus(`Analysis ready for ${primaryAnalysis.profile.login}.`, "success");
+    }
 
     results.classList.remove("hidden");
-    setStatus(`Analysis ready for ${analysis.profile.login}.`, "success");
   } catch (error) {
     console.error(error);
     setStatus(error.message || "Unable to analyze this profile.", "error");
   } finally {
     setLoadingState(false);
   }
+}
+
+async function fetchProfileAnalysis(username) {
+  const [profile, repositories, events] = await Promise.all([
+    fetchJson(`https://api.github.com/users/${encodeURIComponent(username)}`),
+    fetchJson(`https://api.github.com/users/${encodeURIComponent(username)}/repos?per_page=100&sort=updated`),
+    fetchJson(`https://api.github.com/users/${encodeURIComponent(username)}/events/public?per_page=100`),
+  ]);
+
+  return buildAnalysis(profile, repositories, events);
 }
 
 async function fetchJson(url) {
@@ -108,7 +127,10 @@ function buildAnalysis(profile, repositories, events) {
   const topRepos = [...repositories]
     .sort((a, b) => b.stargazers_count - a.stargazers_count || b.forks_count - a.forks_count)
     .slice(0, 5);
+  const topRepo = topRepos[0] || null;
   const pushedRecently = repositories.filter((repo) => daysSince(repo.pushed_at) <= 30).length;
+  const recentEventCount = events.filter((event) => daysSince(event.created_at) <= 30).length;
+  const avgStarsPerOriginalRepo = originalRepos.length ? totalStars / originalRepos.length : 0;
   const score = calculateScore({
     followers: profile.followers,
     publicRepos: profile.public_repos,
@@ -140,13 +162,55 @@ function buildAnalysis(profile, repositories, events) {
       totalForks,
       watchers,
       pushedRecently,
+      recentEventCount,
+      avgStarsPerOriginalRepo,
     },
     topRepos,
+    topRepo,
     languages,
     score,
     scoreBreakdown,
     events: summarizeEvents(events),
     activitySeries: buildActivitySeries(events),
+  };
+}
+
+function buildComparison(primary, secondary) {
+  const primaryLanguageMap = new Map(primary.languages.map((entry) => [entry.language, entry.count]));
+  const secondaryLanguageMap = new Map(secondary.languages.map((entry) => [entry.language, entry.count]));
+  const sharedLanguages = [...primaryLanguageMap.keys()]
+    .filter((language) => secondaryLanguageMap.has(language))
+    .map((language) => ({
+      language,
+      primaryCount: primaryLanguageMap.get(language),
+      secondaryCount: secondaryLanguageMap.get(language),
+    }))
+    .sort((a, b) => (b.primaryCount + b.secondaryCount) - (a.primaryCount + a.secondaryCount));
+
+  return {
+    primary,
+    secondary,
+    sharedLanguages,
+    metrics: [
+      compareMetric("Followers", primary.profile.followers, secondary.profile.followers),
+      compareMetric("Public repos", primary.profile.public_repos, secondary.profile.public_repos),
+      compareMetric("Total stars", primary.totals.totalStars, secondary.totals.totalStars),
+      compareMetric("Recent repo updates (30d)", primary.totals.pushedRecently, secondary.totals.pushedRecently),
+      compareMetric("Recent public events (30d)", primary.totals.recentEventCount, secondary.totals.recentEventCount),
+      compareMetric("Average stars per original repo", primary.totals.avgStarsPerOriginalRepo, secondary.totals.avgStarsPerOriginalRepo, 1),
+      compareMetric("Account age (years)", accountAgeInYears(primary.profile.created_at), accountAgeInYears(secondary.profile.created_at), 1),
+    ],
+  };
+}
+
+function compareMetric(label, primaryValue, secondaryValue, digits = 0) {
+  return {
+    label,
+    primaryValue,
+    secondaryValue,
+    primaryText: formatMetricValue(primaryValue, digits),
+    secondaryText: formatMetricValue(secondaryValue, digits),
+    winner: primaryValue === secondaryValue ? "tie" : primaryValue > secondaryValue ? "primary" : "secondary",
   };
 }
 
@@ -297,6 +361,15 @@ function renderAnalysis(analysis) {
   renderActivity(analysis.events, analysis.activitySeries);
 }
 
+function renderComparison(primary, secondary) {
+  const comparison = buildComparison(primary, secondary);
+  renderCompareHeader(primary, secondary);
+  renderCompareMetrics(comparison);
+  renderCompareTopRepos(primary, secondary);
+  renderCompareLanguages(comparison);
+  renderCompareActivity(primary, secondary);
+}
+
 function renderProfile(profile, totals) {
   profileSummary.innerHTML = `
     <div class="profile-header">
@@ -313,6 +386,16 @@ function renderProfile(profile, totals) {
           ${createPill(`${formatNumber(totals.repoCount)} public repos`)}
         </div>
       </div>
+    </div>
+  `;
+}
+
+function renderCompareHeader(primary, secondary) {
+  profileSummary.innerHTML = `
+    <div class="compare-header">
+      ${createCompareProfile(primary)}
+      <div class="compare-vs">vs</div>
+      ${createCompareProfile(secondary)}
     </div>
   `;
 }
@@ -354,6 +437,30 @@ function renderScore(score, profile, scoreBreakdown) {
   `).join("");
 }
 
+function renderCompareMetrics(comparison) {
+  scoreCard.innerHTML = `
+    <h2>Comparison View</h2>
+    <p class="score-note">Side-by-side comparison across public GitHub signals and the opinionated profile score.</p>
+    <div class="metric-list"></div>
+    <div class="compare-table"></div>
+  `;
+
+  const metricList = scoreCard.querySelector(".metric-list");
+  appendMetric(metricList, `${comparison.primary.profile.login} score`, `${comparison.primary.score}/100`);
+  appendMetric(metricList, `${comparison.secondary.profile.login} score`, `${comparison.secondary.score}/100`);
+  appendMetric(metricList, "Shared top languages", formatNumber(comparison.sharedLanguages.length));
+  appendMetric(metricList, "Combined public repos", formatNumber(comparison.primary.profile.public_repos + comparison.secondary.profile.public_repos));
+
+  const table = scoreCard.querySelector(".compare-table");
+  table.innerHTML = comparison.metrics.map((metric) => `
+    <div class="compare-row">
+      <span class="compare-value ${metric.winner === "primary" ? "winner" : ""}">${escapeHtml(metric.primaryText)}</span>
+      <span class="compare-label">${escapeHtml(metric.label)}</span>
+      <span class="compare-value ${metric.winner === "secondary" ? "winner" : ""}">${escapeHtml(metric.secondaryText)}</span>
+    </div>
+  `).join("");
+}
+
 function renderRepoStats(totals, topRepos) {
   repoStats.innerHTML = `
     <h2>Repository Signals</h2>
@@ -386,6 +493,17 @@ function renderRepoStats(totals, topRepos) {
   `).join("");
 }
 
+function renderCompareTopRepos(primary, secondary) {
+  repoStats.innerHTML = `
+    <h2>Top Repositories</h2>
+    <p class="muted">Highest-traction public repository for each profile, side by side.</p>
+    <div class="compare-panels">
+      ${createTopRepoPanel(primary)}
+      ${createTopRepoPanel(secondary)}
+    </div>
+  `;
+}
+
 function renderLanguages(languages) {
   languageBreakdown.innerHTML = `
     <h2>Language Mix</h2>
@@ -407,6 +525,33 @@ function renderLanguages(languages) {
       </div>
       <div class="bar-track">
         <div class="bar-fill" style="width: ${entry.percentage}%"></div>
+      </div>
+    </div>
+  `).join("");
+}
+
+function renderCompareLanguages(comparison) {
+  languageBreakdown.innerHTML = `
+    <h2>Language Overlap</h2>
+    <p class="muted">Shared top languages between both public profiles.</p>
+    <div class="bar-list"></div>
+  `;
+
+  const list = languageBreakdown.querySelector(".bar-list");
+  if (!comparison.sharedLanguages.length) {
+    list.innerHTML = `<p class="muted">No overlap across the top visible repository languages.</p>`;
+    return;
+  }
+
+  list.innerHTML = comparison.sharedLanguages.slice(0, 6).map((entry) => `
+    <div class="bar-item">
+      <div class="bar-top">
+        <strong>${escapeHtml(entry.language)}</strong>
+        <span class="list-label">${comparison.primary.profile.login}: ${entry.primaryCount} | ${comparison.secondary.profile.login}: ${entry.secondaryCount}</span>
+      </div>
+      <div class="compare-track">
+        <div class="compare-fill compare-fill-primary" style="width: ${calculateCompareWidth(entry.primaryCount, entry.secondaryCount)}%"></div>
+        <div class="compare-fill compare-fill-secondary" style="width: ${calculateCompareWidth(entry.secondaryCount, entry.primaryCount)}%"></div>
       </div>
     </div>
   `).join("");
@@ -469,11 +614,91 @@ function renderActivity(events, activitySeries) {
   `).join("");
 }
 
+function renderCompareActivity(primary, secondary) {
+  activityFeed.innerHTML = `
+    <h2>Recent Activity</h2>
+    <p class="muted">Public event volume and momentum across both profiles.</p>
+    <div class="compare-panels">
+      ${createActivityPanel(primary)}
+      ${createActivityPanel(secondary)}
+    </div>
+  `;
+}
+
 function appendMetric(container, label, value) {
   const metric = metricTemplate.content.firstElementChild.cloneNode(true);
   metric.querySelector(".metric-label").textContent = label;
   metric.querySelector(".metric-value").textContent = value;
   container.append(metric);
+}
+
+function createCompareProfile(analysis) {
+  return `
+    <article class="compare-profile">
+      <img class="avatar" src="${analysis.profile.avatar_url}" alt="${analysis.profile.login} avatar">
+      <div>
+        <h2>${escapeHtml(analysis.profile.name || analysis.profile.login)}</h2>
+        <p><a href="${analysis.profile.html_url}" target="_blank" rel="noreferrer">@${escapeHtml(analysis.profile.login)}</a></p>
+        <p>${escapeHtml(analysis.profile.bio || "No public bio available.")}</p>
+        <div class="pill-row">
+          ${createPill(`${formatNumber(analysis.profile.followers)} followers`)}
+          ${createPill(`${formatNumber(analysis.profile.public_repos)} repos`)}
+          ${createPill(`${formatNumber(analysis.totals.totalStars)} stars`)}
+        </div>
+      </div>
+    </article>
+  `;
+}
+
+function createTopRepoPanel(analysis) {
+  if (!analysis.topRepo) {
+    return `
+      <div class="compare-panel">
+        <div class="item-top">
+          <strong>${escapeHtml(analysis.profile.login)}</strong>
+          <span class="list-label">No public repos</span>
+        </div>
+      </div>
+    `;
+  }
+
+  return `
+    <div class="compare-panel">
+      <div class="item-top">
+        <strong>${escapeHtml(analysis.profile.login)}</strong>
+        <span class="list-label">${formatNumber(analysis.score)} score</span>
+      </div>
+      <div class="repo-item repo-item-compare">
+        <div class="item-top">
+          <strong><a href="${analysis.topRepo.html_url}" target="_blank" rel="noreferrer">${escapeHtml(analysis.topRepo.name)}</a></strong>
+          <span class="list-label">${formatNumber(analysis.topRepo.stargazers_count)} stars</span>
+        </div>
+        <p>${escapeHtml(analysis.topRepo.description || "No description provided.")}</p>
+        <p class="muted">Forks: ${formatNumber(analysis.topRepo.forks_count)} | Language: ${escapeHtml(analysis.topRepo.language || "n/a")}</p>
+      </div>
+    </div>
+  `;
+}
+
+function createActivityPanel(analysis) {
+  const weeklyTotal = analysis.activitySeries.weekly.reduce((sum, entry) => sum + entry.count, 0);
+  return `
+    <div class="compare-panel">
+      <div class="item-top">
+        <strong>${escapeHtml(analysis.profile.login)}</strong>
+        <span class="list-label">${formatNumber(analysis.totals.recentEventCount)} events in 30d</span>
+      </div>
+      <div class="spark-bars compact-spark">
+        ${analysis.activitySeries.daily.map((entry) => `
+          <div class="spark-item" title="${escapeHtml(`${entry.label}: ${entry.count} events`)}">
+            <div class="spark-bar" style="height: ${entry.height}%"></div>
+            <span class="spark-label">${escapeHtml(entry.label)}</span>
+          </div>
+        `).join("")}
+      </div>
+      <p class="muted">Last 8 weeks: ${formatNumber(weeklyTotal)} public events</p>
+    </div>
+  `;
 }
 
 function createPill(text) {
@@ -561,12 +786,17 @@ function setStatus(message, tone = "success") {
 
 function setLoadingState(isLoading) {
   submitButton.disabled = isLoading;
-  submitButton.textContent = isLoading ? "Analyzing..." : "Analyze";
+  submitButton.textContent = isLoading ? "Loading..." : "Analyze";
 }
 
-function updateAddressBar(username) {
+function updateAddressBar(username, compareUsername = "") {
   const url = new URL(window.location.href);
   url.searchParams.set("user", username);
+  if (compareUsername) {
+    url.searchParams.set("compare", compareUsername);
+  } else {
+    url.searchParams.delete("compare");
+  }
   window.history.replaceState({}, "", url);
 }
 
@@ -578,4 +808,22 @@ function applyTheme(theme) {
   if (themeColorMeta) {
     themeColorMeta.setAttribute("content", theme === "dark" ? "#101923" : "#f7f3ea");
   }
+}
+
+function formatMetricValue(value, digits = 0) {
+  return digits > 0 ? Number(value || 0).toFixed(digits) : formatNumber(value || 0);
+}
+
+function accountAgeInYears(dateString) {
+  const years = (Date.now() - new Date(dateString).getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+  return Math.max(0, years);
+}
+
+function calculateCompareWidth(value, otherValue) {
+  const total = value + otherValue;
+  if (!total) {
+    return 50;
+  }
+
+  return Math.max(14, Math.round((value / total) * 100));
 }

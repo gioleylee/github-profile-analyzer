@@ -40,20 +40,37 @@
       </div>
 
       <form id="analyzer-form" class="search-panel">
-        <label for="username" class="label">GitHub username</label>
-        <div class="search-row">
-          <input
-            id="username"
-            name="username"
-            type="text"
-            placeholder="octocat"
-            autocomplete="off"
-            spellcheck="false"
-            required
-          >
+        <div class="input-grid">
+          <div>
+            <label for="username" class="label">GitHub username</label>
+            <input
+              id="username"
+              name="username"
+              type="text"
+              placeholder="octocat"
+              autocomplete="off"
+              spellcheck="false"
+              required
+            >
+          </div>
+          <div>
+            <label for="compare-username" class="label">Compare against (optional)</label>
+            <input
+              id="compare-username"
+              name="compare-username"
+              type="text"
+              placeholder="gaearon"
+              autocomplete="off"
+              spellcheck="false"
+            >
+          </div>
+        </div>
+        <div class="search-row search-actions">
           <button type="submit">Analyze</button>
         </div>
-        <p class="hint">Try torvalds, gaearon, or any public GitHub account.</p>
+        <p class="hint">
+          Use one username for a profile snapshot, or add a second username to compare two public GitHub profiles.
+        </p>
       </form>
     </header>
 
