@@ -1,60 +1,106 @@
-<svg width="1280" height="720" viewBox="0 0 1280 720" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <rect width="1280" height="720" fill="#101923"/>
-  <circle cx="170" cy="110" r="170" fill="#0C9488" fill-opacity="0.16"/>
-  <rect x="64" y="48" width="1152" height="176" rx="28" fill="#182332" stroke="#2A3A50"/>
-  <text x="96" y="95" fill="#66D1C4" font-family="Georgia, serif" font-size="20" letter-spacing="4">GITHUB PROFILE ANALYZER</text>
-  <text x="96" y="152" fill="#EDF4FF" font-family="Georgia, serif" font-size="48">Compare public GitHub profiles at a glance.</text>
-  <text x="96" y="190" fill="#A9B6C7" font-family="Georgia, serif" font-size="22">Followers, stars, language overlap, activity, and a transparent score heuristic.</text>
-  <rect x="96" y="252" width="316" height="58" rx="18" fill="#0C131E" stroke="#2A3A50"/>
-  <text x="118" y="288" fill="#A9B6C7" font-family="Georgia, serif" font-size="22">torvalds</text>
-  <rect x="428" y="252" width="316" height="58" rx="18" fill="#0C131E" stroke="#2A3A50"/>
-  <text x="450" y="288" fill="#A9B6C7" font-family="Georgia, serif" font-size="22">gaearon</text>
-  <rect x="760" y="252" width="146" height="58" rx="18" fill="url(#buttonGradient)"/>
-  <text x="796" y="288" fill="white" font-family="Georgia, serif" font-size="22">Analyze</text>
+<svg width="1440" height="960" viewBox="0 0 1440 960" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1440" height="960" fill="#0B1220"/>
+  <circle cx="122" cy="98" r="180" fill="#1EA99A" fill-opacity="0.14"/>
+  <circle cx="1312" cy="834" r="220" fill="#F0B44B" fill-opacity="0.08"/>
 
-  <rect x="64" y="252" width="554" height="188" rx="24" fill="#182332" stroke="#2A3A50"/>
-  <rect x="662" y="252" width="554" height="188" rx="24" fill="#182332" stroke="#2A3A50"/>
-  <circle cx="154" cy="330" r="40" fill="#2C455E"/>
-  <circle cx="752" cy="330" r="40" fill="#2C455E"/>
-  <text x="214" y="326" fill="#EDF4FF" font-family="Georgia, serif" font-size="34">Linus Torvalds</text>
-  <text x="812" y="326" fill="#EDF4FF" font-family="Georgia, serif" font-size="34">Dan Abramov</text>
-  <text x="214" y="360" fill="#A9B6C7" font-family="Georgia, serif" font-size="20">@torvalds</text>
-  <text x="812" y="360" fill="#A9B6C7" font-family="Georgia, serif" font-size="20">@gaearon</text>
-  <rect x="214" y="388" width="116" height="34" rx="17" fill="#163A3A"/>
-  <text x="236" y="410" fill="#66D1C4" font-family="Georgia, serif" font-size="16">248K followers</text>
-  <rect x="812" y="388" width="114" height="34" rx="17" fill="#163A3A"/>
-  <text x="834" y="410" fill="#66D1C4" font-family="Georgia, serif" font-size="16">89K followers</text>
+  <rect x="96" y="54" width="1248" height="852" rx="28" fill="#101923"/>
+  <rect x="96.5" y="54.5" width="1247" height="851" rx="27.5" stroke="#2A3A50"/>
 
-  <rect x="64" y="466" width="368" height="190" rx="24" fill="#182332" stroke="#2A3A50"/>
-  <rect x="456" y="466" width="368" height="190" rx="24" fill="#182332" stroke="#2A3A50"/>
-  <rect x="848" y="466" width="368" height="190" rx="24" fill="#182332" stroke="#2A3A50"/>
+  <rect x="96" y="54" width="1248" height="54" rx="28" fill="#162131"/>
+  <path d="M96 82C96 66.536 108.536 54 124 54H1316C1331.46 54 1344 66.536 1344 82V108H96V82Z" fill="#162131"/>
+  <circle cx="136" cy="81" r="8" fill="#F87171"/>
+  <circle cx="164" cy="81" r="8" fill="#FBBF24"/>
+  <circle cx="192" cy="81" r="8" fill="#34D399"/>
+  <rect x="248" y="67" width="824" height="28" rx="14" fill="#0E1725" stroke="#304154"/>
+  <text x="284" y="86" fill="#8EA0B7" font-family="Segoe UI, Arial, sans-serif" font-size="14">https://gioleylee.github.io/github-profile-analyzer/?user=torvalds&amp;compare=gaearon</text>
 
-  <text x="92" y="508" fill="#EDF4FF" font-family="Georgia, serif" font-size="28">Comparison Metrics</text>
-  <text x="92" y="546" fill="#A9B6C7" font-family="Georgia, serif" font-size="20">Followers</text>
-  <text x="320" y="546" fill="#66D1C4" font-family="Georgia, serif" font-size="20">248K vs 89K</text>
-  <text x="92" y="578" fill="#A9B6C7" font-family="Georgia, serif" font-size="20">Total stars</text>
-  <text x="300" y="578" fill="#66D1C4" font-family="Georgia, serif" font-size="20">196K vs 125K</text>
-  <text x="92" y="610" fill="#A9B6C7" font-family="Georgia, serif" font-size="20">Language overlap</text>
-  <text x="276" y="610" fill="#66D1C4" font-family="Georgia, serif" font-size="20">C, JavaScript, TypeScript</text>
+  <rect x="132" y="134" width="1176" height="220" rx="28" fill="#182332" stroke="#2A3A50"/>
+  <text x="164" y="176" fill="#66D1C4" font-family="Segoe UI, Arial, sans-serif" font-size="13" letter-spacing="3">GITHUB PROFILE ANALYZER</text>
+  <rect x="1172" y="156" width="104" height="36" rx="18" fill="#213246" stroke="#32465B"/>
+  <text x="1199" y="179" fill="#EDF4FF" font-family="Segoe UI, Arial, sans-serif" font-size="15">Light mode</text>
+  <text x="164" y="238" fill="#EDF4FF" font-family="Georgia, serif" font-size="52">Turn a GitHub username into a quick technical snapshot.</text>
+  <text x="164" y="285" fill="#9DB0C7" font-family="Segoe UI, Arial, sans-serif" font-size="20">Review profile strength, repository health, language distribution, and recent public activity without leaving the browser.</text>
 
-  <text x="484" y="508" fill="#EDF4FF" font-family="Georgia, serif" font-size="28">Top Repositories</text>
-  <text x="484" y="546" fill="#A9B6C7" font-family="Georgia, serif" font-size="20">linux</text>
-  <text x="726" y="546" fill="#66D1C4" font-family="Georgia, serif" font-size="20">194K stars</text>
-  <text x="484" y="578" fill="#A9B6C7" font-family="Georgia, serif" font-size="20">redux</text>
-  <text x="720" y="578" fill="#66D1C4" font-family="Georgia, serif" font-size="20">61K stars</text>
+  <rect x="164" y="308" width="176" height="34" rx="17" fill="#213246" stroke="#31455A"/>
+  <rect x="352" y="308" width="130" height="34" rx="17" fill="#213246" stroke="#31455A"/>
+  <rect x="494" y="308" width="168" height="34" rx="17" fill="#213246" stroke="#31455A"/>
+  <text x="189" y="330" fill="#DCE6F3" font-family="Segoe UI, Arial, sans-serif" font-size="14">Live GitHub API data</text>
+  <text x="384" y="330" fill="#DCE6F3" font-family="Segoe UI, Arial, sans-serif" font-size="14">No build step</text>
+  <text x="523" y="330" fill="#DCE6F3" font-family="Segoe UI, Arial, sans-serif" font-size="14">Shareable profile links</text>
 
-  <text x="876" y="508" fill="#EDF4FF" font-family="Georgia, serif" font-size="28">Recent Activity</text>
-  <rect x="884" y="558" width="18" height="44" rx="9" fill="#F0B44B"/>
-  <rect x="912" y="528" width="18" height="74" rx="9" fill="#66D1C4"/>
-  <rect x="940" y="540" width="18" height="62" rx="9" fill="#F0B44B"/>
-  <rect x="968" y="510" width="18" height="92" rx="9" fill="#66D1C4"/>
-  <rect x="996" y="548" width="18" height="54" rx="9" fill="#F0B44B"/>
-  <rect x="1024" y="522" width="18" height="80" rx="9" fill="#66D1C4"/>
-  <rect x="1052" y="534" width="18" height="68" rx="9" fill="#F0B44B"/>
-  <text x="884" y="628" fill="#A9B6C7" font-family="Georgia, serif" font-size="18">Daily and weekly event counts</text>
+  <rect x="164" y="384" width="286" height="60" rx="18" fill="#0D1522" stroke="#2A3A50"/>
+  <rect x="466" y="384" width="286" height="60" rx="18" fill="#0D1522" stroke="#2A3A50"/>
+  <rect x="768" y="384" width="138" height="60" rx="18" fill="url(#buttonFill)"/>
+  <text x="188" y="421" fill="#8EA0B7" font-family="Segoe UI, Arial, sans-serif" font-size="20">torvalds</text>
+  <text x="490" y="421" fill="#8EA0B7" font-family="Segoe UI, Arial, sans-serif" font-size="20">gaearon</text>
+  <text x="806" y="421" fill="white" font-family="Segoe UI, Arial, sans-serif" font-size="20" font-weight="600">Analyze</text>
+
+  <rect x="164" y="462" width="106" height="34" rx="17" fill="#213246" stroke="#31455A"/>
+  <rect x="282" y="462" width="102" height="34" rx="17" fill="#213246" stroke="#31455A"/>
+  <rect x="396" y="462" width="132" height="34" rx="17" fill="#213246" stroke="#31455A"/>
+  <rect x="540" y="462" width="170" height="34" rx="17" fill="#213246" stroke="#31455A"/>
+  <text x="194" y="484" fill="#DCE6F3" font-family="Segoe UI, Arial, sans-serif" font-size="14">torvalds</text>
+  <text x="314" y="484" fill="#DCE6F3" font-family="Segoe UI, Arial, sans-serif" font-size="14">gaearon</text>
+  <text x="425" y="484" fill="#DCE6F3" font-family="Segoe UI, Arial, sans-serif" font-size="14">sindresorhus</text>
+  <text x="569" y="484" fill="#DCE6F3" font-family="Segoe UI, Arial, sans-serif" font-size="14">torvalds vs gaearon</text>
+
+  <rect x="132" y="382" width="1176" height="484" rx="28" fill="#0F1725" stroke="#223246"/>
+
+  <rect x="164" y="414" width="1112" height="156" rx="24" fill="#182332" stroke="#2A3A50"/>
+  <rect x="188" y="440" width="498" height="104" rx="20" fill="#223246"/>
+  <rect x="754" y="440" width="498" height="104" rx="20" fill="#223246"/>
+  <circle cx="244" cy="492" r="34" fill="#32465B"/>
+  <circle cx="810" cy="492" r="34" fill="#32465B"/>
+  <text x="292" y="482" fill="#EDF4FF" font-family="Georgia, serif" font-size="28">Linus Torvalds</text>
+  <text x="858" y="482" fill="#EDF4FF" font-family="Georgia, serif" font-size="28">Dan Abramov</text>
+  <text x="292" y="510" fill="#A9B6C7" font-family="Segoe UI, Arial, sans-serif" font-size="17">@torvalds</text>
+  <text x="858" y="510" fill="#A9B6C7" font-family="Segoe UI, Arial, sans-serif" font-size="17">@gaearon</text>
+  <rect x="292" y="520" width="112" height="28" rx="14" fill="#173B3B"/>
+  <rect x="412" y="520" width="86" height="28" rx="14" fill="#173B3B"/>
+  <rect x="858" y="520" width="108" height="28" rx="14" fill="#173B3B"/>
+  <rect x="974" y="520" width="78" height="28" rx="14" fill="#173B3B"/>
+  <text x="313" y="539" fill="#66D1C4" font-family="Segoe UI, Arial, sans-serif" font-size="13">248K followers</text>
+  <text x="434" y="539" fill="#66D1C4" font-family="Segoe UI, Arial, sans-serif" font-size="13">63 repos</text>
+  <text x="879" y="539" fill="#66D1C4" font-family="Segoe UI, Arial, sans-serif" font-size="13">89K followers</text>
+  <text x="996" y="539" fill="#66D1C4" font-family="Segoe UI, Arial, sans-serif" font-size="13">279 repos</text>
+  <rect x="704" y="470" width="40" height="40" rx="20" fill="#213246" stroke="#32465B"/>
+  <text x="718" y="496" fill="#66D1C4" font-family="Segoe UI, Arial, sans-serif" font-size="14" font-weight="700">VS</text>
+
+  <rect x="164" y="594" width="352" height="240" rx="22" fill="#182332" stroke="#2A3A50"/>
+  <rect x="544" y="594" width="352" height="240" rx="22" fill="#182332" stroke="#2A3A50"/>
+  <rect x="924" y="594" width="352" height="240" rx="22" fill="#182332" stroke="#2A3A50"/>
+
+  <text x="190" y="632" fill="#EDF4FF" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="600">Comparison View</text>
+  <text x="190" y="668" fill="#A9B6C7" font-family="Segoe UI, Arial, sans-serif" font-size="16">Followers</text>
+  <text x="408" y="668" fill="#66D1C4" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="end">248K vs 89K</text>
+  <text x="190" y="700" fill="#A9B6C7" font-family="Segoe UI, Arial, sans-serif" font-size="16">Public repos</text>
+  <text x="408" y="700" fill="#EDF4FF" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="end">63 vs 279</text>
+  <text x="190" y="732" fill="#A9B6C7" font-family="Segoe UI, Arial, sans-serif" font-size="16">Total stars</text>
+  <text x="408" y="732" fill="#66D1C4" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="end">196K vs 125K</text>
+  <text x="190" y="764" fill="#A9B6C7" font-family="Segoe UI, Arial, sans-serif" font-size="16">Shared languages</text>
+  <text x="408" y="764" fill="#EDF4FF" font-family="Segoe UI, Arial, sans-serif" font-size="16" text-anchor="end">C, JS, TypeScript</text>
+
+  <text x="570" y="632" fill="#EDF4FF" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="600">Top Repositories</text>
+  <rect x="570" y="656" width="300" height="72" rx="16" fill="#223246"/>
+  <text x="590" y="684" fill="#EDF4FF" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="600">linux</text>
+  <text x="590" y="708" fill="#A9B6C7" font-family="Segoe UI, Arial, sans-serif" font-size="14">194K stars | C | 57K forks</text>
+  <rect x="570" y="742" width="300" height="72" rx="16" fill="#223246"/>
+  <text x="590" y="770" fill="#EDF4FF" font-family="Segoe UI, Arial, sans-serif" font-size="18" font-weight="600">redux</text>
+  <text x="590" y="794" fill="#A9B6C7" font-family="Segoe UI, Arial, sans-serif" font-size="14">61K stars | TypeScript | 15K forks</text>
+
+  <text x="950" y="632" fill="#EDF4FF" font-family="Segoe UI, Arial, sans-serif" font-size="24" font-weight="600">Recent Activity</text>
+  <text x="950" y="662" fill="#A9B6C7" font-family="Segoe UI, Arial, sans-serif" font-size="14">Daily public event counts</text>
+  <rect x="954" y="716" width="18" height="52" rx="9" fill="#F0B44B"/>
+  <rect x="982" y="686" width="18" height="82" rx="9" fill="#66D1C4"/>
+  <rect x="1010" y="696" width="18" height="72" rx="9" fill="#F0B44B"/>
+  <rect x="1038" y="670" width="18" height="98" rx="9" fill="#66D1C4"/>
+  <rect x="1066" y="704" width="18" height="64" rx="9" fill="#F0B44B"/>
+  <rect x="1094" y="680" width="18" height="88" rx="9" fill="#66D1C4"/>
+  <rect x="1122" y="692" width="18" height="76" rx="9" fill="#F0B44B"/>
+  <text x="953" y="796" fill="#A9B6C7" font-family="Segoe UI, Arial, sans-serif" font-size="14">Mon  Tue  Wed  Thu  Fri  Sat  Sun</text>
 
   <defs>
-    <linearGradient id="buttonGradient" x1="760" y1="252" x2="906" y2="310" gradientUnits="userSpaceOnUse">
+    <linearGradient id="buttonFill" x1="768" y1="384" x2="906" y2="444" gradientUnits="userSpaceOnUse">
       <stop stop-color="#0F766E"/>
       <stop offset="1" stop-color="#155E75"/>
     </linearGradient>
