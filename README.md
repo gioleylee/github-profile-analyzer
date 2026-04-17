@@ -87,9 +87,7 @@ This project focuses on a simple idea: take raw public GitHub profile data and r
 
 ## Next Improvements
 
-- Add a small chart for repo activity over time
 - Add export or snapshot sharing for a generated profile view
-- Add richer comparison metrics for contribution patterns and repository quality
 
 ## Notes
 
