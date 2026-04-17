@@ -11,6 +11,7 @@ This project focuses on a simple idea: take raw public GitHub profile data and r
 - Profile overview with follower, following, location, and bio details
 - Computed profile score based on public activity and repository signals
 - Compare mode for two public GitHub profiles
+- Clickable sample chips for quick exploration
 - Expandable score explanation with visible scoring criteria
 - Repository metrics including stars, forks, watchers, and recent updates
 - Top repositories ranked by public traction
@@ -25,7 +26,7 @@ This project focuses on a simple idea: take raw public GitHub profile data and r
 
 ## Preview
 
-![GitHub Profile Analyzer preview](./preview.svg)
+![GitHub Profile Analyzer preview](./profile_analyzer_preview.png)
 
 ## What This Analyzes
 
@@ -54,7 +55,7 @@ This project focuses on a simple idea: take raw public GitHub profile data and r
 
 1. Clone or download the project.
 2. Open `index.html` in a browser.
-3. Search for any public GitHub username.
+3. Search for any public GitHub username, or use the built-in sample chips.
 
 ## Design Decisions
 
@@ -79,15 +80,16 @@ This project focuses on a simple idea: take raw public GitHub profile data and r
 |-- index.html
 |-- styles.css
 |-- app.js
+|-- profile_analyzer_preview.png
 |-- README.md
 `-- .gitignore
 ```
 
 ## Next Improvements
 
-- Add a saved comparison view for two GitHub profiles
 - Add a small chart for repo activity over time
 - Add export or snapshot sharing for a generated profile view
+- Add richer comparison metrics for contribution patterns and repository quality
 
 ## Notes
 
