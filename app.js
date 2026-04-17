@@ -58,7 +58,7 @@ async function analyzeProfile(username) {
     const [profile, repositories, events] = await Promise.all([
       fetchJson(`https://api.github.com/users/${encodeURIComponent(username)}`),
       fetchJson(`https://api.github.com/users/${encodeURIComponent(username)}/repos?per_page=100&sort=updated`),
-      fetchJson(`https://api.github.com/users/${encodeURIComponent(username)}/events/public?per_page=10`),
+      fetchJson(`https://api.github.com/users/${encodeURIComponent(username)}/events/public?per_page=100`),
     ]);
 
     const analysis = buildAnalysis(profile, repositories, events);
@@ -119,6 +119,16 @@ function buildAnalysis(profile, repositories, events) {
     blog: Boolean(profile.blog),
     company: Boolean(profile.company),
   });
+  const scoreBreakdown = buildScoreBreakdown({
+    followers: profile.followers,
+    publicRepos: profile.public_repos,
+    totalStars,
+    pushedRecently,
+    originalRepoCount: originalRepos.length,
+    bio: Boolean(profile.bio),
+    blog: Boolean(profile.blog),
+    company: Boolean(profile.company),
+  });
 
   return {
     profile,
@@ -134,23 +144,56 @@ function buildAnalysis(profile, repositories, events) {
     topRepos,
     languages,
     score,
+    scoreBreakdown,
     events: summarizeEvents(events),
+    activitySeries: buildActivitySeries(events),
   };
 }
 
 function calculateScore(inputs) {
-  let score = 0;
+  const total = buildScoreBreakdown(inputs).reduce((sum, item) => sum + item.points, 0);
+  return Math.max(0, Math.min(100, Math.round(total)));
+}
 
-  score += Math.min(inputs.followers * 1.2, 25);
-  score += Math.min(inputs.publicRepos * 0.6, 18);
-  score += Math.min(inputs.totalStars * 0.35, 25);
-  score += Math.min(inputs.pushedRecently * 1.5, 15);
-  score += Math.min(inputs.originalRepoCount * 0.5, 8);
-  score += inputs.bio ? 3 : 0;
-  score += inputs.blog ? 3 : 0;
-  score += inputs.company ? 3 : 0;
-
-  return Math.max(0, Math.min(100, Math.round(score)));
+function buildScoreBreakdown(inputs) {
+  return [
+    {
+      label: "Followers",
+      metric: formatNumber(inputs.followers),
+      points: Math.min(inputs.followers * 1.2, 25),
+      cap: 25,
+    },
+    {
+      label: "Public repos",
+      metric: formatNumber(inputs.publicRepos),
+      points: Math.min(inputs.publicRepos * 0.6, 18),
+      cap: 18,
+    },
+    {
+      label: "Stars across repos",
+      metric: formatNumber(inputs.totalStars),
+      points: Math.min(inputs.totalStars * 0.35, 25),
+      cap: 25,
+    },
+    {
+      label: "Recent repo activity",
+      metric: `${formatNumber(inputs.pushedRecently)} updated in 30d`,
+      points: Math.min(inputs.pushedRecently * 1.5, 15),
+      cap: 15,
+    },
+    {
+      label: "Original repositories",
+      metric: formatNumber(inputs.originalRepoCount),
+      points: Math.min(inputs.originalRepoCount * 0.5, 8),
+      cap: 8,
+    },
+    {
+      label: "Profile completeness",
+      metric: `${inputs.bio ? 1 : 0}/${inputs.blog ? 1 : 0}/${inputs.company ? 1 : 0} bio-blog-company`,
+      points: (inputs.bio ? 3 : 0) + (inputs.blog ? 3 : 0) + (inputs.company ? 3 : 0),
+      cap: 9,
+    },
+  ];
 }
 
 function aggregateLanguages(repositories) {
@@ -188,12 +231,70 @@ function summarizeEvents(events) {
   }));
 }
 
+function buildActivitySeries(events) {
+  return {
+    daily: aggregateEventsByDay(events, 7),
+    weekly: aggregateEventsByWeek(events, 8),
+  };
+}
+
+function aggregateEventsByDay(events, days) {
+  const counts = new Map();
+
+  for (let index = days - 1; index >= 0; index -= 1) {
+    const date = new Date();
+    date.setHours(0, 0, 0, 0);
+    date.setDate(date.getDate() - index);
+    counts.set(date.toISOString().slice(0, 10), 0);
+  }
+
+  for (const event of events) {
+    const key = new Date(event.created_at).toISOString().slice(0, 10);
+    if (counts.has(key)) {
+      counts.set(key, counts.get(key) + 1);
+    }
+  }
+
+  const max = Math.max(...counts.values(), 1);
+
+  return [...counts.entries()].map(([key, count]) => ({
+    label: formatShortDay(key),
+    count,
+    height: Math.max(10, Math.round((count / max) * 100)),
+  }));
+}
+
+function aggregateEventsByWeek(events, weeks) {
+  const counts = new Map();
+
+  for (let index = weeks - 1; index >= 0; index -= 1) {
+    const weekStart = startOfWeek(new Date(), index);
+    counts.set(weekStart.toISOString().slice(0, 10), 0);
+  }
+
+  for (const event of events) {
+    const eventWeek = startOfWeek(new Date(event.created_at), 0).toISOString().slice(0, 10);
+    if (counts.has(eventWeek)) {
+      counts.set(eventWeek, counts.get(eventWeek) + 1);
+    }
+  }
+
+  const max = Math.max(...counts.values(), 1);
+
+  return [...counts.entries()].map(([key, count], index) => ({
+    label: `W${index + 1}`,
+    count,
+    height: Math.max(10, Math.round((count / max) * 100)),
+    detail: formatWeekLabel(key),
+  }));
+}
+
 function renderAnalysis(analysis) {
   renderProfile(analysis.profile, analysis.totals);
-  renderScore(analysis.score, analysis.profile);
+  renderScore(analysis.score, analysis.profile, analysis.scoreBreakdown);
   renderRepoStats(analysis.totals, analysis.topRepos);
   renderLanguages(analysis.languages);
-  renderActivity(analysis.events);
+  renderActivity(analysis.events, analysis.activitySeries);
 }
 
 function renderProfile(profile, totals) {
@@ -216,7 +317,7 @@ function renderProfile(profile, totals) {
   `;
 }
 
-function renderScore(score, profile) {
+function renderScore(score, profile, scoreBreakdown) {
   const message = score >= 80
     ? "Strong public footprint with consistent signals of activity and reach."
     : score >= 55
@@ -228,6 +329,13 @@ function renderScore(score, profile) {
     <div class="score">${score}<span class="muted">/100</span></div>
     <p class="score-note">${message}</p>
     <div class="metric-list"></div>
+    <details class="explain-card">
+      <summary>How score is calculated</summary>
+      <p class="muted">
+        This score is an opinionated heuristic based on public GitHub signals. It is not an official GitHub metric.
+      </p>
+      <div class="explain-list"></div>
+    </details>
   `;
 
   const metricList = scoreCard.querySelector(".metric-list");
@@ -235,6 +343,15 @@ function renderScore(score, profile) {
   appendMetric(metricList, "Public Repos", formatNumber(profile.public_repos));
   appendMetric(metricList, "Public Gists", formatNumber(profile.public_gists));
   appendMetric(metricList, "Joined", formatDate(profile.created_at));
+
+  const explainList = scoreCard.querySelector(".explain-list");
+  explainList.innerHTML = scoreBreakdown.map((item) => `
+    <div class="explain-item">
+      <strong>${escapeHtml(item.label)}</strong>
+      <span class="list-label">${escapeHtml(item.metric)}</span>
+      <span class="list-label">${Math.round(item.points)}/${item.cap} points</span>
+    </div>
+  `).join("");
 }
 
 function renderRepoStats(totals, topRepos) {
@@ -295,12 +412,45 @@ function renderLanguages(languages) {
   `).join("");
 }
 
-function renderActivity(events) {
+function renderActivity(events, activitySeries) {
   activityFeed.innerHTML = `
     <h2>Recent Activity</h2>
     <p class="muted">Latest public events from the GitHub activity feed.</p>
+    <div class="activity-visuals">
+      <div class="mini-chart">
+        <div class="item-top">
+          <strong>By day</strong>
+          <span class="list-label">Last 7 days</span>
+        </div>
+        <div class="spark-bars daily-bars"></div>
+      </div>
+      <div class="mini-chart">
+        <div class="item-top">
+          <strong>By week</strong>
+          <span class="list-label">Last 8 weeks</span>
+        </div>
+        <div class="spark-bars weekly-bars"></div>
+      </div>
+    </div>
     <div class="activity-list"></div>
   `;
+
+  const dailyBars = activityFeed.querySelector(".daily-bars");
+  const weeklyBars = activityFeed.querySelector(".weekly-bars");
+
+  dailyBars.innerHTML = activitySeries.daily.map((entry) => `
+    <div class="spark-item" title="${escapeHtml(`${entry.label}: ${entry.count} events`)}">
+      <div class="spark-bar" style="height: ${entry.height}%"></div>
+      <span class="spark-label">${escapeHtml(entry.label)}</span>
+    </div>
+  `).join("");
+
+  weeklyBars.innerHTML = activitySeries.weekly.map((entry) => `
+    <div class="spark-item" title="${escapeHtml(`${entry.detail}: ${entry.count} events`)}">
+      <div class="spark-bar" style="height: ${entry.height}%"></div>
+      <span class="spark-label">${escapeHtml(entry.label)}</span>
+    </div>
+  `).join("");
 
   const list = activityFeed.querySelector(".activity-list");
   if (!events.length) {
@@ -363,6 +513,27 @@ function humanizeEventType(type) {
     .replace(/Event$/, "")
     .replace(/([A-Z])/g, " $1")
     .trim();
+}
+
+function formatShortDay(dateString) {
+  return new Date(dateString).toLocaleDateString(undefined, {
+    weekday: "short",
+  });
+}
+
+function formatWeekLabel(dateString) {
+  return `Week of ${new Date(dateString).toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+  })}`;
+}
+
+function startOfWeek(date, weeksAgo) {
+  const copy = new Date(date);
+  copy.setHours(0, 0, 0, 0);
+  copy.setDate(copy.getDate() - (copy.getDay() + 6) % 7);
+  copy.setDate(copy.getDate() - weeksAgo * 7);
+  return copy;
 }
 
 function formatNumber(value) {

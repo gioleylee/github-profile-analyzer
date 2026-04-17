@@ -10,12 +10,17 @@ This project focuses on a simple idea: take raw public GitHub profile data and r
 
 - Profile overview with follower, following, location, and bio details
 - Computed profile score based on public activity and repository signals
+- Expandable score explanation with visible scoring criteria
 - Repository metrics including stars, forks, watchers, and recent updates
 - Top repositories ranked by public traction
 - Language distribution across public repositories
-- Recent public GitHub activity feed
+- Recent public GitHub activity feed with daily and weekly event counts
 - Built-in light and dark mode toggle
 - Shareable profile links with `?user=<username>`
+
+## Live Demo
+
+- GitHub Pages: `https://gioleylee.github.io/github-profile-analyzer/`
 
 ## What This Demonstrates
 
@@ -45,6 +50,15 @@ This project focuses on a simple idea: take raw public GitHub profile data and r
 - Clear synthesis over raw output: the interface emphasizes summaries, top signals, and public traction rather than dumping API responses.
 - Shareable state: the selected username is stored in the URL for easy linking and repeatable demos.
 
+## Architecture
+
+`fetch -> aggregate -> score -> render`
+
+- Fetch: request public user, repository, and event data from the GitHub API
+- Aggregate: derive totals, language mix, top repos, and recent activity counts
+- Score: calculate an opinionated profile score from visible public signals
+- Render: update the dashboard cards and charts in the browser
+
 ## Repo Structure
 
 ```text
@@ -60,7 +74,7 @@ This project focuses on a simple idea: take raw public GitHub profile data and r
 
 - Add a saved comparison view for two GitHub profiles
 - Add a small chart for repo activity over time
-- Add GitHub Pages deployment for a public live demo
+- Add export or snapshot sharing for a generated profile view
 
 ## Notes
 
