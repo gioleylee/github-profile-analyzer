@@ -23,6 +23,18 @@ This project focuses on a simple idea: take raw public GitHub profile data and r
 
 - GitHub Pages: `https://gioleylee.github.io/github-profile-analyzer/`
 
+## Preview
+
+![GitHub Profile Analyzer preview](./preview.svg)
+
+## What This Analyzes
+
+- Public profile signals such as followers, following, account age, and profile completeness
+- Repository footprint including public repos, stars, forks, watchers, and recent updates
+- Language distribution and overlap in compare mode
+- Recent public GitHub events shown as activity feed plus daily and weekly counts
+- An opinionated heuristic score based on visible public signals, not an official GitHub metric
+
 ## What This Demonstrates
 
 - API integration against a real public data source

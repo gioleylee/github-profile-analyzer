@@ -206,6 +206,43 @@ button:disabled {
   color: var(--muted);
 }
 
+.sample-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.sample-chip {
+  padding: 10px 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--chip-bg);
+  color: var(--ink);
+  box-shadow: none;
+}
+
+.what-analyzes {
+  margin-top: 18px;
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--panel-bg);
+}
+
+.what-analyzes h2 {
+  margin: 0 0 8px;
+  font-size: 1rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.what-analyzes p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.6;
+}
+
 .results {
   margin-top: 24px;
 }

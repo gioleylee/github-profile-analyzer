@@ -2,6 +2,7 @@ const form = document.querySelector("#analyzer-form");
 const input = document.querySelector("#username");
 const compareInput = document.querySelector("#compare-username");
 const submitButton = form.querySelector('button[type="submit"]');
+const sampleChips = document.querySelectorAll(".sample-chip");
 const themeToggle = document.querySelector("#theme-toggle");
 const results = document.querySelector("#results");
 const statusCard = document.querySelector("#status-card");
@@ -33,6 +34,16 @@ systemPrefersDark.addEventListener("change", (event) => {
 
   applyTheme(event.matches ? "dark" : "light");
 });
+
+for (const chip of sampleChips) {
+  chip.addEventListener("click", async () => {
+    const primary = chip.dataset.primary || "";
+    const compare = chip.dataset.compare || "";
+    input.value = primary;
+    compareInput.value = compare;
+    await analyzeProfiles(primary, compare);
+  });
+}
 
 form.addEventListener("submit", async (event) => {
   event.preventDefault();
