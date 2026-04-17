@@ -4,7 +4,7 @@ GitHub Profile Analyzer is a lightweight front-end project that turns a public G
 
 ## Overview
 
-This project was built as a concise portfolio piece: small surface area, clear user value, and no framework or build tooling required to run it. The goal was to take raw GitHub profile data and reshape it into signals that feel more useful for quick evaluation and discussion.
+This project focuses on a simple idea: take raw public GitHub profile data and reshape it into signals that are easier to scan, compare, and discuss. It keeps the surface area small, runs without framework or build tooling, and emphasizes clarity over complexity.
 
 ## Features
 
