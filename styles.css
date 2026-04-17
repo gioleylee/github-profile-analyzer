@@ -72,6 +72,21 @@ input {
   color: var(--muted);
 }
 
+.hero-points {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.hero-point {
+  padding: 8px 12px;
+  border: 1px solid rgba(31, 36, 48, 0.1);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.62);
+  font-size: 0.92rem;
+}
+
 .search-panel {
   margin-top: 28px;
 }
@@ -156,6 +171,12 @@ button:disabled {
 
 .status-card {
   margin-top: 24px;
+}
+
+.page-footer {
+  margin-top: 18px;
+  color: var(--muted);
+  text-align: center;
 }
 
 .status-card[data-tone="loading"] {
@@ -345,5 +366,9 @@ a {
 
   .hero {
     padding: 24px;
+  }
+
+  .hero-points {
+    gap: 8px;
   }
 }
